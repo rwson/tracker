@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <style type="text/css">
+    div {
+        cursor: pointer;
+        background: red;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="click">click me</div>
+    <script type="text/javascript">
+    function wrap(func) {
+        console.log(func);
+        if (!func._wrapped) {
+            func._wrapped = function() {
+                try {
+                    func.apply(this, arguments);
+                } catch (e) {
+                    console.log(e, arguments);
+                }
+            }
+        }
+        return func._wrapped;
+    };
+
+
+    window.onload = function() {
+        var addEventListener = window.EventTarget.prototype.addEventListener;
+
+        window.EventTarget.prototype.addEventListener = function(event, callback, bubble) {
+            addEventListener.call(this, event, wrap(callback), bubble);
+        };
+
+        var el = document.querySelector('#click');
+
+        el.addEventListener('click', function(e) {
+            console.log(e.path);
+            throw new Error('click error');
+        });
+    };
+    </script>
+</body>
+
+</html>
