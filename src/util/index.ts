@@ -1,6 +1,11 @@
 type FreeType = {
   [key: string]: any;
-};
+}
+
+type WrappedFunction = {
+  _origin?: Function;
+  _wrapped?: Function;
+} & Function
 
 export const getUniqueId = (): string => {
   let id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string) => {
@@ -44,9 +49,10 @@ export const getQuery = (url: string): FreeType | string => {
 };
 
 export const wrapFn = (
-  fn: Function & { _wrapped: Function },
+  fn: WrappedFunction
   onError?: Function
 ): Function => {
+    fn._origin = fn;
     if (!fn._wrapped) {
       fn._wrapped = function() {
         try {

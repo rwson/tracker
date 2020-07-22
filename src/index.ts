@@ -1,18 +1,21 @@
-import ProxyXHR from '@/xhr';
-import ProxyFetch from '@/fetch';
-import Load from '@/load';
-import TrackerError from '@/error';
+import {
+  TrackerConsole,
+  TrackerError,
+  ProxyFetch,
+  Load,
+  ProxyXHR
+} from '@/integrations';
 
 class Tracker {
 
   init() {
-    const proxyXhr: ProxyXHR = new ProxyXHR();
-    const proxyFetch: ProxyFetch = new ProxyFetch();
+    // const proxyXhr: ProxyXHR = new ProxyXHR();
+    // const proxyFetch: ProxyFetch = new ProxyFetch();
     const load: Load = new Load();
     const trackerError: TrackerError = new TrackerError();
 
-    proxyXhr.apply();
-    proxyFetch.apply();
+    // proxyXhr.apply();
+    // proxyFetch.apply();
     load.apply();
     trackerError.apply();
   }
@@ -21,14 +24,14 @@ class Tracker {
 
 (new Tracker()).init();
 
-const xhr = new XMLHttpRequest();
+// const xhr = new XMLHttpRequest();
 
 // xhr.open('GET', 'https://cnodejs.org/api/v1/topics?page=1&limit=2');
-xhr.open('POST', 'http://192.168.1.56:3001/post');
+// xhr.open('POST', 'http://localhost:3000/post');
 
 // xhr.send('string=tset');
 
-// fetch('http://192.168.1.56:3001/post', {
+// fetch('http://localhost:3000/post', {
 //   method: 'post',
 //   body: 'string=tset'
 // }).then((res) => {
@@ -70,4 +73,6 @@ xhr.open('POST', 'http://192.168.1.56:3001/post');
 
 setTimeout(() => {
   console.log(1113333);
+
+  // throw new Error('1111');
 }, 100);

@@ -40,18 +40,39 @@ const EVENT_TARGET: Array<string> = [
   'Worker'
 ];
 
-export default class TrackerError extends TrackerBase {
+interface TrackerErrorInterface {
+  apply(): void;
+}
+
+export default class TrackerError extends TrackerBase implements TrackerErrorInterface {
 
 	private catchTimeout() {
-		const timeoutFn: Function = window.setTimeout;
+    const timeoutFn: Function = window.setTimeout;
+		const _wrapper = function(originalCallback: any, ...args: any[]) {
+      
+      const fn = wrapFn(originalCallback, (err: any, ...args: any) => {
 
-		return function(context: any, ...args: any[]) {
-			const originalCallback: Function = args[0];
-			
-		};
+      });
+
+      console.log(args[0].toString());
+
+      return timeoutFn.apply(window, [fn, ...args]);
+    };
 	}
 
-	private catchInterval() {}
+	private catchInterval() {
+		// const intervalFn: Function = window.setInterval;
+
+		// return function(context: any, ...args: any[]) {
+		// 	const originalCallback: Function = args[0];
+      
+    //   args[0] = wrapFn(originalCallback, (err: any, ...args: any) => {
+        
+    //   });
+
+    //   return intervalFn.apply(window, args);
+		// };
+  }
 
 	private catchError() {
 		const win: Window = window;
@@ -61,9 +82,9 @@ export default class TrackerError extends TrackerBase {
 			const oldHandler: Function | null = win[name];
 
 			win[name] = function(e: Error) {
-				_class.report(name, {
-          reason: e.message
-				});
+				// _class.report(name, {
+        //   reason: e.message
+				// });
 
 				if (typeof oldHandler === 'function') {
 					oldHandler.apply(win, arguments);
@@ -96,7 +117,7 @@ export default class TrackerError extends TrackerBase {
     });
   }
   
-  apply() {
+  public apply() {
     this.catchTimeout();
     this.catchInterval();
     this.catchError();

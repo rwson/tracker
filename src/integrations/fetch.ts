@@ -28,12 +28,12 @@ export default class ProxyFetch extends TrackerBase implements ProxyFetchInterfa
       const prevFetch = (url: string, init: RequestInit): Promise<any> => {
         const method: string = (init.method || 'get').toUpperCase();
         const startTime: number = +(new Date());
+        const needReport: boolean = !(Config.isInExcuteOrigins(url));
 
         return fetch(url, init).then((response: Response) => {
           response.clone().json().then((json) => {
             const contentType: string | null = response.headers.get('content-type');
-            const needReport: boolean = !(Config.isInExcuteOrigins(url));
-
+            
             if (needReport) {
               this.report('request', {
                 url,
@@ -51,6 +51,19 @@ export default class ProxyFetch extends TrackerBase implements ProxyFetchInterfa
           });
 
           return response;
+        }, (e) => {
+          if (needReport) {
+            this.report('request', {
+              url,
+              method,
+              query: getQuery(url),
+              body: formatData(init.body) || {},
+              costTime: `${+(new Date) - startTime}ms`,
+              // status: response.status,
+              response: JSON.stringify(''),
+              // responseType: Mime.getMime(contentType as string)
+            });
+          }
         });
       }
 

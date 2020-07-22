@@ -22,6 +22,8 @@ class TrackerBase implements TrackerBaseInterface {
 
     // console.log(type, body, Bowser.parse(window.navigator.userAgent));
     // console.log(connection);
+
+    console.log(type, delta)
   }
 
 }
